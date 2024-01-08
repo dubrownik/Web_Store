@@ -13,5 +13,6 @@ namespace Web_Store.Data
 
         }
         public DbSet<Web_Store.Models.Product> Product { get; set; } = default!;
+        public DbSet<Web_Store.Models.Cart> Cart { get; set; } = default!;
     }
 }

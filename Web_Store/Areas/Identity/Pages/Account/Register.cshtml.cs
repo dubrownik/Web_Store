@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Web_Store.Models;
@@ -45,6 +46,11 @@ namespace Web_Store.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
         }
+        public List<SelectListItem> Roles { get; } = new List<SelectListItem>
+        {   ///nie zmieniaj value,text mozna
+            new SelectListItem {Value = "Seller", Text ="Seller"},
+            new SelectListItem {Value = "Buyer", Text = "Buyer"},
+        };
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -71,6 +77,10 @@ namespace Web_Store.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
+            [Required]
+            [Display(Name = "UserRole")]
+            public string UserRole { get; set; }
+
             [Required]
             [Display(Name = "First Name")]
             public string FirstName { get; set; }
@@ -141,7 +151,7 @@ namespace Web_Store.Areas.Identity.Pages.Account
                         pageHandler: null,
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
-
+                    await _userManager.AddToRoleAsync(user, Input.UserRole);
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 

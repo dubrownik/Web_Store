@@ -7,7 +7,7 @@ namespace Web_Store
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +18,7 @@ namespace Web_Store
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
 
@@ -46,6 +47,38 @@ namespace Web_Store
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
             app.MapRazorPages();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                var roles = new string[] { "Admin", "Seller", "Buyer" };
+
+                foreach (var role in roles)
+                {
+                    if (!await roleManager.RoleExistsAsync(role))
+                        await roleManager.CreateAsync(new IdentityRole(role));
+                }
+            }
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+                if (await userManager.FindByEmailAsync("admin@admin.com") is null)
+                {
+                    var user = new ApplicationUser
+                    {
+                        //Id = "12345678-1234-1234-1234-1234567890ab",
+                        FirstName = "Admin",
+                        LastName = "Admin",
+                        UserName = "admin@admin.com",
+                        Email = "admin@admin.com",
+                    };
+
+                    await userManager.CreateAsync(user, "Admin1!");
+                    await userManager.AddToRoleAsync(user, "Admin");
+                }
+            }
 
             app.Run();
         }
