@@ -1,33 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Web_Store.Data;
 using Web_Store.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web_Store.Controllers
 {
-    public class CartsController : Controller
+    public class CartController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public CartsController(ApplicationDbContext context)
+        public CartController(ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
-        // GET: Carts
+        // Get(/GetCartEntries/Index)
+        // AddEntry
+        // EditEntry
+        // DeleteEntry
+
+        // GET: Cart
         public async Task<IActionResult> Index()
         {
-              return _context.Cart != null ? 
-                          View(await _context.Cart.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.Cart'  is null.");
+            var cart = await _context.Cart.SingleOrDefaultAsync(x => x.UserId == _userManager.GetUserId(User));
+
+            return cart is not null ?
+                View(cart) :
+                Problem("Couldn't find user's cart");
         }
 
-        // GET: Carts/Details/5
+        // GET: Cart/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Cart == null)
@@ -45,13 +58,13 @@ namespace Web_Store.Controllers
             return View(cart);
         }
 
-        // GET: Carts/Create
+        // GET: Cart/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Carts/Create
+        // POST: Cart/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -67,7 +80,7 @@ namespace Web_Store.Controllers
             return View(cart);
         }
 
-        // GET: Carts/Edit/5
+        // GET: Cart/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Cart == null)
@@ -83,7 +96,7 @@ namespace Web_Store.Controllers
             return View(cart);
         }
 
-        // POST: Carts/Edit/5
+        // POST: Cart/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -118,7 +131,7 @@ namespace Web_Store.Controllers
             return View(cart);
         }
 
-        // GET: Carts/Delete/5
+        // GET: Cart/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Cart == null)
@@ -136,7 +149,7 @@ namespace Web_Store.Controllers
             return View(cart);
         }
 
-        // POST: Carts/Delete/5
+        // POST: Cart/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -150,14 +163,14 @@ namespace Web_Store.Controllers
             {
                 _context.Cart.Remove(cart);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool CartExists(int id)
         {
-          return (_context.Cart?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Cart?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Web_Store.Models
 
         public UserType UserType { get; set; }
 
-        public List<Cart> Cart { get; set; } = new List<Cart>();
+        public Cart? Cart { get; set; } = new Cart();
     }
 }
 
