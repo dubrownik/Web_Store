@@ -11,7 +11,7 @@ namespace Web_Store.Models
         public string Description { get; set; }
         //public int CategoryId { get; set; }
         [Display(Name = "Cena")]
-        public int Price { get; set; }
+        public decimal Price { get; set; }
 
         // public int SellerId { get; set; }
 

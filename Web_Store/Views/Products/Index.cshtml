@@ -56,10 +56,17 @@
                     }
                     @if (User.IsInRole("Buyer"))
                     {
-                        <span>|</span> <a asp-action="Tralalala" asp-route-id="@item.Id">Dodaj do koszyka</a>
+                        <span>|</span>
+                        <partial name="_BuyPartial" model="@new CartEntry { ProductId = item.Id, Quantity=1 }" />
                     }
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
