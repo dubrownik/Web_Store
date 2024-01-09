@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Web_Store.Models
 {
@@ -13,10 +14,10 @@ namespace Web_Store.Models
         [Display(Name = "Cena")]
         public decimal Price { get; set; }
 
-        // public int SellerId { get; set; }
+        [ForeignKey(nameof(Seller))]
+        public string SellerId { get; set; }
+        public virtual ApplicationUser Seller { get; set; }
 
         //public int Picture { get; set; }
-
-
     }
 }
