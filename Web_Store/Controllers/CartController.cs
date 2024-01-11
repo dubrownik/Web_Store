@@ -58,7 +58,7 @@ namespace Web_Store.Controllers
         // Edit entry
 
         // POST: Cart/Delete/5
-        [HttpDelete]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteEntry(int id)
         {
