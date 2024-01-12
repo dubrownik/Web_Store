@@ -47,6 +47,7 @@ namespace Web_Store
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
             app.MapRazorPages();
+            app.UseRequestLocalization("en-US");
 
             using (var scope = app.Services.CreateScope())
             {

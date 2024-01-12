@@ -23,8 +23,49 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Status)
         </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.OrderPrice)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.OrderPrice)
+        </dd>
+        <
     </dl>
+
 </div>
+
+<table class="table">
+<thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.OrderEntries.GetEnumerator().Current.ProductNameAtPurchase)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.OrderEntries.GetEnumerator().Current.UnitPriceAtPurchase)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.OrderEntries.GetEnumerator().Current.Quantity)
+        </th>
+    </tr>
+</thead>
+<tbody>
+    @foreach (var orderEntry in Model.OrderEntries)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => orderEntry.ProductNameAtPurchase)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => orderEntry.UnitPriceAtPurchase)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => orderEntry.Quantity)
+            </td>
+        </tr>
+    }
+</tbody>
+</table>
 <div>
        <a asp-action="Index">Back to List</a>
 </div>

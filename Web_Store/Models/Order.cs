@@ -7,10 +7,17 @@ namespace Web_Store.Models
 	{
 		[Display(Name = "Numer zamówienia")]
 		public int Id { get; set; }
+
 		public string BuyerId { get; set; }
-		public List<OrderEntry> OrderEntries { get; set; }
+
+		public virtual List<OrderEntry> OrderEntries { get; set; }
+
 		[Display(Name = "Adres")]
 		public string Address { get; set; }
+
 		public OrderStatus Status { get; set; }
-	}
+
+        [Display(Name = "Cena zamówienia")]
+        public decimal? OrderPrice => OrderEntries?.Sum(x => x.UnitPriceAtPurchase * x.Quantity);
+    }
 }

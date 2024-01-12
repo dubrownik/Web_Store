@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Web_Store.Models
@@ -15,9 +16,11 @@ namespace Web_Store.Models
         public decimal Price { get; set; }
 
         [ForeignKey(nameof(Seller))]
+        [ValidateNever]
         public string SellerId { get; set; }
+        [ValidateNever]
         public virtual ApplicationUser Seller { get; set; }
-
+        
         //public int Picture { get; set; }
     }
 }

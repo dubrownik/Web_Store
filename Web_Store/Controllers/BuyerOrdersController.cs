@@ -29,7 +29,8 @@ namespace Web_Store.Controllers
 		{
 			List<Order> userOrders = await _context.Order
 				.Where(buyer => buyer.BuyerId == _userManager.GetUserId(User))
-				.ToListAsync();
+                .Include(x => x.OrderEntries)
+                .ToListAsync();
 
 			return _context.Order != null ?
 						base.View(userOrders) :
@@ -85,7 +86,9 @@ namespace Web_Store.Controllers
 			}
 
 			var order = await _context.Order
+				.Include(x => x.OrderEntries)
 				.FirstOrDefaultAsync(m => m.Id == id);
+
 			if (order == null)
 			{
 				return NotFound();
