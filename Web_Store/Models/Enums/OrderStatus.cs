@@ -2,6 +2,6 @@
 {
     public enum OrderStatus
     {
-        PrzyjęteDoRealizacji = 100, WTrakcieRealizacji = 200, Wysłane = 300, Dostarczone = 400, Odrzucone = 500
+        PrzyjęteDoRealizacji = 100, WTrakcieRealizacji = 200, Wysłane = 300, Dostarczone = 400, Anulowane = 500
     }
 }

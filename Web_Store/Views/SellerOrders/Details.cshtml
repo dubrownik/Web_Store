@@ -1,4 +1,5 @@
 ﻿@model Web_Store.Models.Order
+@using Web_Store.Models.Enums
 
 @{
     ViewData["Title"] = "Szczegóły";
@@ -7,7 +8,7 @@
 <h1>Szczegóły zamówienia</h1>
 
 <div>
-    <h4>Order</h4>
+    
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -37,8 +38,28 @@
             @using (Html.BeginForm("EditStatus", "SellerOrders", FormMethod.Post))
             {
                 <input asp-for="Id" class="form-control" hidden />
-                <input asp-for="Status" class="form-control" hidden placeholder="OrderStatus.WTrakcieRealizacji" />
-                <button type="submit" class="btn btn-primary">Commit another one</button>
+                <input asp-for="Address" class="form-control" hidden />
+                <input asp-for="Buyer" class="form-control" hidden />
+                <input asp-for="BuyerId" class="form-control" hidden />
+
+                @if (Model.Status == OrderStatus.PrzyjęteDoRealizacji)
+                {
+                    <button formmethod="post" class="btn btn-primary" name="@Html.NameFor(model => model.Status)" value="@(nameof(OrderStatus.WTrakcieRealizacji))")>W trakcie</button>
+                }
+                @if (Model.Status == OrderStatus.WTrakcieRealizacji)
+                {
+                    <button formmethod="post" class="btn btn-primary" name="@Html.NameFor(model => model.Status)" value="@(nameof(OrderStatus.Wysłane))")>Wysłane</button>
+                }
+                @if (Model.Status == OrderStatus.Wysłane)
+                {
+                    <button formmethod="post" class="btn btn-primary" name="@Html.NameFor(model => model.Status)" value="@(nameof(OrderStatus.Dostarczone))")>Dostarczone</button>
+                }
+                @if (Model.Status is not OrderStatus.Dostarczone and not OrderStatus.Anulowane)
+                {
+                    <button formmethod="post" class="btn btn-danger" name="@Html.NameFor(model => model.Status)" value="@(nameof(OrderStatus.Anulowane))")>REMOVE</button>
+                }
+                
+                
             }
         </dd>
     </dl>

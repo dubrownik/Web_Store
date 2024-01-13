@@ -9,8 +9,6 @@ namespace Web_Store.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
-        public UserType UserType { get; set; }
-
         public Cart? Cart { get; set; } = new Cart();
     }
 }

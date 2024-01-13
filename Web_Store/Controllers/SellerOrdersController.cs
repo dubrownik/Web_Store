@@ -62,9 +62,15 @@ namespace Web_Store.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditStatus(int id, [Bind("Id,Status")] Order order)
+        public async Task<IActionResult> EditStatus(int id, Order order)
         {
-             if (id != order.Id)
+            if (id != order.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
                 try
                 {
                     _context.Update(order);
@@ -72,9 +78,11 @@ namespace Web_Store.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    return RedirectToAction(nameof(Index), nameof(HomeController));
+                    return RedirectToAction(nameof(HomeController.Error), nameof(HomeController));
                 }
-           return RedirectToAction(nameof(Details), order.Id);
+            }
+
+            return RedirectToAction(nameof(Details), new { id = order.Id });
         }
 
 
