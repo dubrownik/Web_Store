@@ -27,13 +27,21 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Products">Products</a>
                         </li>
                     </ul>
-
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Cart">
-                        <i class="fa fa-cart-shopping fa-xl"></i>
-                    </a>
-                    <a class="nav-link text-dark" asp-area="" asp-controller="BuyerOrders">
-                        <i class="fa fa-history fa-xl"></i>
-                    </a>
+                    @if (User.IsInRole("Buyer"))
+                    {
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Cart">
+                            <i class="fa fa-cart-shopping fa-xl"></i>
+                        </a>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="BuyerOrders">
+                            <i class="fa fa-history fa-xl"></i>
+                        </a>
+                    }
+                    @if (User.IsInRole("Seller"))
+                    {
+                        <a class="nav-link text-dark" asp-area="" asp-controller="SellerOrders">
+                            <i class="fa fa-history fa-xl"></i>
+                        </a>
+                    }
                     <partial name="_LoginPartial" />
                 </div>
             </div>

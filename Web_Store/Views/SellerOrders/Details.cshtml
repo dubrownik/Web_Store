@@ -1,0 +1,80 @@
+﻿@model Web_Store.Models.Order
+
+@{
+    ViewData["Title"] = "Szczegóły";
+}
+
+<h1>Szczegóły zamówienia</h1>
+
+<div>
+    <h4>Order</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            Imię i nazwisko
+        </dt>
+        <dd class = "col-sm-10">
+            @Model.Buyer.FirstName @Model.Buyer.LastName
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Buyer.Email)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Buyer.Email)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Address)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Status)
+            
+            @using (Html.BeginForm("EditStatus", "SellerOrders", FormMethod.Post))
+            {
+                <input asp-for="Id" class="form-control" hidden />
+                <input asp-for="Status" class="form-control" hidden placeholder="OrderStatus.WTrakcieRealizacji" />
+                <button type="submit" class="btn btn-primary">Commit another one</button>
+            }
+        </dd>
+    </dl>
+</div>
+<table class="table">
+<thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.OrderEntries.GetEnumerator().Current.ProductNameAtPurchase)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.OrderEntries.GetEnumerator().Current.UnitPriceAtPurchase)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.OrderEntries.GetEnumerator().Current.Quantity)
+        </th>
+    </tr>
+</thead>
+<tbody>
+    @foreach (var orderEntry in Model.OrderEntries)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => orderEntry.ProductNameAtPurchase)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => orderEntry.UnitPriceAtPurchase)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => orderEntry.Quantity)
+            </td>
+        </tr>
+    }
+</tbody>
+</table>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
