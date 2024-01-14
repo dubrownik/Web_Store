@@ -2,6 +2,14 @@
     ViewData["Title"] = "Home Page";
 }
 
+@if (!User.IsInRole("Admin") && !User.IsInRole("Seller") && !User.IsInRole("Buyer"))
+{
+    Context.Response.Redirect("./Identity/Account/Login", false);
+}
+else{
+    Context.Response.Redirect("./Products", false);
+}
+
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>

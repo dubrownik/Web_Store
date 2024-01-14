@@ -34,6 +34,6 @@ namespace Web_Store.Models
         [Display(Name = "Zdjęcie")]
         public IFormFile? PictureFile { get; set; }
 
-        public virtual Category Category { get; set; } = null!;
+        public virtual Category? Category { get; set; } = null!;
     }
 }

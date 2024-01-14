@@ -33,6 +33,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Category)
             </th>
+            <th>
+                Sprzedawca
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -68,13 +71,16 @@
                     @Html.DisplayFor(modelItem => item.Category.Name)
                 </td>
                 <td>
-                    @if (User.IsInRole("Admin") | User.IsInRole("Seller"))
+                    @String.Concat(item.Seller.FirstName, " ", item.Seller.LastName.ToString().Substring(0, 1))
+                </td>
+                <td>
+                    @if (User.IsInRole("Admin") | User.IsInRole("Seller") && String.Equals(ViewData["UserID"], item.SellerId))
                     {
                         <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> <span>|</span>
                     }
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a>
 
-                    @if (User.IsInRole("Admin") | User.IsInRole("Seller"))
+                    @if (User.IsInRole("Admin") | User.IsInRole("Seller") && String.Equals(ViewData["UserID"], item.SellerId))
                     {
                         <span>|</span> <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                     }

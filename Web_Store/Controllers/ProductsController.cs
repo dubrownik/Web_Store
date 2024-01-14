@@ -34,8 +34,12 @@ namespace Web_Store.Controllers
         // GET: Products
         public async Task<IActionResult> Index()
         {
-              return _context.Products != null ? 
-                          View(await _context.Products.Include(p => p.Category).ToListAsync()) :
+            ViewData["UserID"] = _userManager.GetUserId(User);
+            return _context.Products != null ? 
+                          View(await _context.Products
+                          .Include(p => p.Category)
+                          .Include(u => u.Seller)
+                          .ToListAsync()) :
                           Problem("Entity set 'ApplicationDbContext.Product'  is null.");
         }
 
@@ -71,7 +75,7 @@ namespace Web_Store.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Price,PictureFile")] Product product)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,Price,PictureFile,CategoryId")] Product product)
         {
             product.SellerId = _userManager.GetUserId(User);
             var errors = ModelState.Values.SelectMany(v => v.Errors);
