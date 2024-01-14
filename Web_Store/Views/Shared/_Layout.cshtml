@@ -40,7 +40,7 @@
                     </ul>
                     @if (User.IsInRole("Buyer"))
                     {
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Cart">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Index">
                             <i class="fa fa-cart-shopping fa-xl"></i>
                         </a>
                         <a class="nav-link text-dark" asp-area="" asp-controller="BuyerOrders">
