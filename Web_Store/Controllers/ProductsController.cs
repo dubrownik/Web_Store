@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Web_Store.Data;
@@ -24,11 +25,17 @@ namespace Web_Store.Controllers
             _userManager = userManager;
         }
 
+        public class PictureModel : Product
+        {
+            [BindProperty]
+            public Product FileUpload { get; set; }
+        }
+
         // GET: Products
         public async Task<IActionResult> Index()
         {
               return _context.Products != null ? 
-                          View(await _context.Products.ToListAsync()) :
+                          View(await _context.Products.Include(p => p.Category).ToListAsync()) :
                           Problem("Entity set 'ApplicationDbContext.Product'  is null.");
         }
 
@@ -41,6 +48,7 @@ namespace Web_Store.Controllers
             }
 
             var product = await _context.Products
+                .Include(p => p.Category)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (product == null)
             {
@@ -54,6 +62,7 @@ namespace Web_Store.Controllers
         [Authorize(Roles = "Admin, Seller")]
         public IActionResult Create()
         {
+            ViewData["CategoryId"] = new SelectList(_context.Set<Category>(), "Id", "Name");
             return View();
         }
 
@@ -62,12 +71,27 @@ namespace Web_Store.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Price")] Product product)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,Price,PictureFile")] Product product)
         {
             product.SellerId = _userManager.GetUserId(User);
-
+            var errors = ModelState.Values.SelectMany(v => v.Errors);
             if (ModelState.IsValid)
             {
+                if (product.PictureFile != null && product.PictureFile.Length > 0)
+                {
+                    //New filename for uploaded picture
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(product.PictureFile.FileName);
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/", fileName);
+
+                    //Save file locally
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await product.PictureFile.CopyToAsync(fileStream);
+                    }
+
+                    product.PictureLink = fileName;
+                }
+
                 _context.Add(product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -79,6 +103,7 @@ namespace Web_Store.Controllers
         [Authorize(Roles = "Admin, Seller")]
         public async Task<IActionResult> Edit(int? id)
         {
+            ViewData["CategoryId"] = new SelectList(_context.Set<Category>(), "Id", "Name");
             if (id == null || _context.Products == null)
             {
                 return NotFound();
@@ -97,7 +122,7 @@ namespace Web_Store.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price,PictureFile")] Product product)
         {
             if (id != product.Id)
             {
@@ -108,7 +133,23 @@ namespace Web_Store.Controllers
             {
                 try
                 {
+                    product.SellerId = _userManager.GetUserId(User);
                     _context.Update(product);
+                    if (product.PictureFile != null && product.PictureFile.Length > 0)
+                    {
+                        //New filename for uploaded picture
+                        var fileName = Guid.NewGuid().ToString() + Path.GetExtension(product.PictureFile.FileName);
+                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/", fileName);
+
+                        //Save file locally
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await product.PictureFile.CopyToAsync(fileStream);
+                        }
+
+                        product.PictureLink = fileName;
+                        _context.Update(product);
+                    }
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -137,6 +178,7 @@ namespace Web_Store.Controllers
             }
 
             var product = await _context.Products
+                .Include(p => p.Category)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (product == null)
             {

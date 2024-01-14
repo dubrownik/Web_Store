@@ -16,6 +16,7 @@ namespace Web_Store.Data
         public DbSet<Web_Store.Models.Cart> Carts { get; set; } = default!;
         public DbSet<Web_Store.Models.CartEntry> CartEntries { get; set; } = default!;
         public DbSet<Web_Store.Models.Order> Order { get; set; } = default!;
+        public DbSet<Web_Store.Models.Category> Category { get; set; } = default!;
 
     }
 }

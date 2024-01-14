@@ -15,7 +15,7 @@
             <div class="form-group">
                 <select asp-for="Input.UserRole"
                         asp-items="@(Model.Roles)">
-                    <option>Please select a role</option>
+                    <option disabled selected>Please select a role</option>
                 </select>
                 <span asp-validation-for="Input.UserRole" class="text-danger"></span>
             </div>
