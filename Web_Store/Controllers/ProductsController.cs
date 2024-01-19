@@ -83,16 +83,20 @@ namespace Web_Store.Controllers
             {
                 if (product.PictureFile != null && product.PictureFile.Length > 0)
                 {
+                    //Ensure directory exists
+                    var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/");
+                    Directory.CreateDirectory(directoryPath);
+
                     //New filename for uploaded picture
                     var fileName = Guid.NewGuid().ToString() + Path.GetExtension(product.PictureFile.FileName);
-                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/", fileName);
+                    var filePath = Path.Combine(directoryPath, fileName);
 
                     //Save file locally
                     using (var fileStream = new FileStream(filePath, FileMode.Create))
                     {
                         await product.PictureFile.CopyToAsync(fileStream);
                     }
-
+                    
                     product.PictureLink = fileName;
                 }
 
